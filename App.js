@@ -11,12 +11,15 @@ import {
 
 export default function App() {
   const [enterGoal, setEnterGoal] = useState("");
-  const [courseGoal, setCourseGoal] = useState([]);
+  const [courseGoals, setCourseGoals] = useState([
+    "walk dog",
+    "drink mangolassi"
+  ]);
 
   const goalInputHandler = enteredText => setEnterGoal(enteredText);
 
   const addGoalHandler = () =>
-    setCourseGoal(currentGoals => [...courseGoal, enterGoal]);
+    setCourseGoals(currentGoals => [...courseGoals, enterGoal]);
 
   return (
     <View styles={styles.screen}>
@@ -27,15 +30,15 @@ export default function App() {
           onChangeText={goalInputHandler}
           value={enterGoal}
         />
-        <Button title="Add" onPress={addGoalHandler} />
+        <Button title="Singh" onPress={addGoalHandler} />
       </View>
-      <FlatList data={courseGoal} renderItem={itemData =>() } style={styles.output}>
-        {courseGoal.map((course, index) => {
-          return (
-            
-          );
-        })}
-      </FlatList>
+      <FlatList
+        data={courseGoals}
+        renderItem={({ item }) => {
+          console.log(item);
+          return <Text>{item}</Text>;
+        }}
+      />
     </View>
   );
 }
