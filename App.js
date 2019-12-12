@@ -8,36 +8,41 @@ import {
   ScrollView,
   FlatList
 } from "react-native";
+import GoalItem from "./components/Goal_item";
+import GoalInput from "./components/Goal_Input";
 
 export default function App() {
-  const [enterGoal, setEnterGoal] = useState("");
-  const [courseGoals, setCourseGoals] = useState([
-    "walk dog",
-    "drink mangolassi"
-  ]);
+  const [courseGoals, setCourseGoals] = useState([]);
+  const [addMode, setAddMode] = useState(false);
 
-  const goalInputHandler = enteredText => setEnterGoal(enteredText);
+  const addGoalHandler = goalTitle => {
+    setCourseGoals(currentGoals => [
+      ...currentGoals,
+      { id: Math.random().toString(), value: goalTitle }
+    ]);
+  };
 
-  const addGoalHandler = () =>
-    setCourseGoals(currentGoals => [...courseGoals, enterGoal]);
+  // Removes Item From the list
+  const onDelete = goalID => {
+    setCourseGoals(currentGoals => {
+      return currentGoals.filter(goal => goal.id !== goalID);
+    });
+  };
 
   return (
-    <View styles={styles.screen}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Course Goal"
-          style={styles.input}
-          onChangeText={goalInputHandler}
-          value={enterGoal}
-        />
-        <Button title="Singh" onPress={addGoalHandler} />
-      </View>
+    <View style={styles.screen}>
+      <Button title="Add New Goal" onPress={() => setAddMode(true)} />
+      <GoalInput visibility={addMode} onAddGoal={addGoalHandler} />
       <FlatList
+        keyExtractor={(item, index) => item.id}
         data={courseGoals}
-        renderItem={({ item }) => {
-          console.log(item);
-          return <Text>{item}</Text>;
-        }}
+        renderItem={itemData => (
+          <GoalItem
+            id={itemData.item.id}
+            onDelete={onDelete}
+            title={itemData.item.value}
+          />
+        )}
       />
     </View>
   );
@@ -45,27 +50,6 @@ export default function App() {
 
 const styles = StyleSheet.create({
   screen: {
-    padding: 10,
-    marginTop: 50
-  },
-  inputContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 50
-  },
-  input: {
-    width: "80%",
-    borderColor: "black",
-    borderWidth: 1,
-    padding: 1
-  },
-  listItem: {
-    padding: 10,
-    marginVertical: 10,
-
-    backgroundColor: "#ccc",
-    borderColor: "black",
-    borderWidth: 1
+    padding: 50
   }
 });
